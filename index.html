@@ -8,106 +8,27 @@
     <link rel="stylesheet" href="./main.css">
 </head>
 <body>
+
     <div class="container">
-        <select class="category-select" id="category-select" onchange="chooseCurrentCategory()">
-            <option value="">Выберите что-нибудь</option>
-            <option value="1">Вариант 1</option>
-            <option value="2">Вариант 2</option>
-            <option value="3">Вариант 3</option>
-          </select>
+        
+        <h1 class="page__header">Поиск статей</h1>
+        <div class="page__category-select">
+            <select class="category-select" id="category-select">
+                <option value="">Выберите что-нибудь</option>
+            </select>
+        </div>
+
         <div class="pagination">
-            <button class="pagination__prev">Previous page</button>
-            <button class="pagination__next">Next page</button>
+            <button class="pagination__prev" >Previous page</button>
+            <button class="pagination__next" >Next page</button>
         </div>
         <div class="grid">
-
+            
         </div>
-        
+        <div class="mask hide">
+            <div class="loader"></div>
+        </div>
     </div>
-    <!-- <script src="assets/js/index.js" type="module"></script> -->
-<script>
-const getCategories = async () => {
-    const response = await fetch(`https://techcrunch.com/wp-json/wp/v2/categories`)
-    return await response.json()
-}
-
-const getPostsByPage = async (pageNum) => {
-    const response = await fetch(`https://techcrunch.com/wp-json/wp/v2/posts?page=${pageNum}`)
-    return await response.json()
-}
-
-const getPostsByPageAndCategory = async (pageNum, categoryId) => {
-    const response = await fetch(`https://techcrunch.com/wp-json/wp/v2/posts?categories=${categoryId}&page=${pageNum}`)
-    return await response.json()
-}
-</script>
-<script>
-let currentPage = 1;
-let currentCategory = null;
-
-const categoriesSelect = document.querySelector(".category-select");
-const nextPageButton = document.querySelector(".pagination__next");
-const prevPageButton = document.querySelector(".pagination__prev");
-// const categoriesSelect = document.getElementById("category-select");
-const grid = document.querySelector(".grid");
-
-/*Сохраняем категории и выбираем текующую*/
-const cat = getCategories()
-.then((catrgory) => {
-    localStorage.setItem('catrgories', JSON.stringify(catrgory));
-})
-.then(() =>{
-    addCategoriesToSelect();
-})
-.catch((error) => {
-    console.log(error);
-});
-function addCategoriesToSelect(){
-    categoriesSelect.innerHTML = "";
-    let option = document.createElement("option");
-    option.textContent = "Выберите категорию";
-    categoriesSelect.appendChild(option);
-    let categories = JSON.parse(localStorage.getItem('catrgories'));
-    categories.forEach(element => {
-        let option = document.createElement("option");
-        option.textContent = element.name;
-        categoriesSelect.appendChild(option);
-    }); 
-}
-function chooseCurrentCategory(){
-    let categories = JSON.parse(localStorage.getItem('catrgories'));
-    let selectedCategory = categoriesSelect[categoriesSelect.selectedIndex].textContent;
-}
-
-/*Показать текущие посты*/
-async function getRenderedPosts(){
-    const pag = getPostsByPage(currentPage)
-    .then((pages) => {
-        renderPosts(pages);
-    })
-}
-getRenderedPosts();
-async function renderPosts(pages){
-    grid.innerHTML="";
-    pages.forEach(element =>{
-        let post = document.createElement('article');
-        post.innerHTML = element.content.rendered
-        grid.appendChild(post);
-    })
-    
-}
-
-nextPageButton.addEventListener("click", ()=>{
-    currentPage +=1;
-    getRenderedPosts(currentPage);
-})
-prevPageButton.addEventListener("click", ()=>{
-    if(currentPage !=1){
-        currentPage-=1;
-        getRenderedPosts(currentPage);
-    } 
-})
-
-</script>
+    <script src="index.js" type="module"></script>
 </body>
 </html>
