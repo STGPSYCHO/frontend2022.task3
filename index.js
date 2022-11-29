@@ -10,11 +10,8 @@ const mask = document.querySelector(".mask");
 
 /*Сохраняем категории в локал стор*/
 getCategories()
-.then((catrgory) => {
-    localStorage.setItem('catrgories', JSON.stringify(catrgory));
-})
-.then(() =>{
-    addCategoriesToSelect();
+.then((categories) => {
+    addCategoriesToSelect(categories);
 })
 .catch((error) => {
     console.log(error);
@@ -26,12 +23,12 @@ function addCategoriesToSelect(){
     categoriesSelect.innerHTML = "";
     let option = document.createElement("option");
     option.text = "Выберите категорию";
-    option.setAttribute("value","") // Необходимо для "Пустого" выбора.
+    option.value = ''; // Необходимо для "Пустого" выбора.
     categoriesSelect.appendChild(option);
     let categories = JSON.parse(localStorage.getItem('catrgories'));
     categories.forEach(element => {
         let option = document.createElement("option");
-        option.setAttribute("value",element.id);
+        option.value = element.id;
         option.text = element.name;
         categoriesSelect.appendChild(option);
     }); 
@@ -39,8 +36,7 @@ function addCategoriesToSelect(){
 
 /*Выбор категории из выпадающего списка*/
 function chooseCurrentCategory(){
-    let categories = JSON.parse(localStorage.getItem('catrgories'));
-    currentCategory = categoriesSelect[categoriesSelect.selectedIndex].value;
+    currentCategory = categoriesSelect.value;
 }
 /*Отрисовка постов, при выборе категории*/
 categoriesSelect.addEventListener("change",()=>{
